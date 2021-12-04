@@ -3,9 +3,7 @@
  */
 package edu.neu.coe.huskySort.sort.huskySortUtils;
 
-import edu.neu.coe.huskySort.sort.msdSort.TranslatorFactory;
-import edu.neu.coe.huskySort.sort.msdSort.UnicodeTranslator;
-
+//import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.LongBuffer;
@@ -136,24 +134,6 @@ public final class HuskyCoderFactory {
          */
         public long huskyEncode(final String str) {
             return utf8ToLong(str);
-        }
-    };
-
-    /**
-     * A Husky Coder for Chinese.
-     */
-    public final static HuskySequenceCoder<String> chineseCoder = new BaseHuskySequenceCoder<String>("Chinese", MAX_LENGTH_ENGLISH) {
-        final UnicodeTranslator<String, String> chineseTranslator = TranslatorFactory.CHINESE_TRANSLATOR;
-        /**
-         * Encode x as a long.
-         * As much as possible, if x > y, huskyEncode(x) > huskyEncode(y).
-         * If this cannot be guaranteed, then the result of imperfect(z) will be true.
-         *
-         * @param str the X value to encode.
-         * @return a long which is, as closely as possible, monotonically increasing with the domain of X values.
-         */
-        public long huskyEncode(final String str) {
-            return englishToLong(chineseTranslator.msdDecode(str));
         }
     };
 
@@ -350,6 +330,30 @@ public final class HuskyCoderFactory {
         return result;
     }
 
+    // NOTE: this method ought to be faster but I don't think it is.
+    // If you uncomment this, you must also uncomment the static initializer at the end of this file.
+//    private static long stringToLongAvoidLength(final String str, final int maxLength, final int bitWidth, final int mask) {
+//        char[] chars = new char[maxLength];
+//        try {
+//            char[] value = (char[]) fieldStringValue.get(str);
+//            final int length = Math.min(value.length, maxLength);
+//            System.arraycopy(value, 0, chars, 0, length);
+//
+//            str.getChars(0, length, chars, 0);
+//            final int padding = maxLength - length;
+//            long result = 0L;
+//            if (((mask ^ MASK_SHORT) & MASK_SHORT) == 0)
+//                for (int i = 0; i < length; i++) result = result << bitWidth | chars[i];
+//            else
+//                for (int i = 0; i < length; i++) result = result << bitWidth | chars[i] & mask;
+//            result = result << bitWidth * padding;
+//            return result;
+//        } catch (IllegalAccessException e) {
+//            System.err.println("Cannot get value of private field value of String class: " + e.getLocalizedMessage());
+//            return 0L;
+//        }
+//    }
+
     // NOTE: this method seems considerably slower than stringToLong, even though it uses a Java library function (getBytes)
     private static long stringToBytesToLong(final String str, final int maxLength, final Charset charSet, final int startingPos) {
         final byte[] bytes = str.substring(0, Math.min(maxLength, str.length())).getBytes(charSet);
@@ -426,4 +430,15 @@ public final class HuskyCoderFactory {
         return sign == 0 ? result : -result;
     }
 
+    // NOTE: uncomment the following if you want to use the method stringToLongAvoidLength
+//    private static Field fieldStringValue;
+//
+//    static {
+//        try {
+//            fieldStringValue = String.class.getDeclaredField("value");
+//            fieldStringValue.setAccessible(true);
+//        } catch (NoSuchFieldException e) {
+//            System.err.println("Cannot access private field value of String class: " + e.getLocalizedMessage());
+//        }
+//    }
 }

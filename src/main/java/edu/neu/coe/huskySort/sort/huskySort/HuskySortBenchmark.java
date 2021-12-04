@@ -10,7 +10,6 @@ import edu.neu.coe.huskySort.sort.huskySortUtils.HuskyCoder;
 import edu.neu.coe.huskySort.sort.huskySortUtils.HuskyCoderFactory;
 import edu.neu.coe.huskySort.sort.huskySortUtils.HuskySortHelper;
 import edu.neu.coe.huskySort.sort.huskySortUtils.HuskySortable;
-import edu.neu.coe.huskySort.sort.msdSort.ChineseTranslator;
 import edu.neu.coe.huskySort.sort.radix.Alphabet;
 import edu.neu.coe.huskySort.sort.radix.MSDStringSort;
 import edu.neu.coe.huskySort.sort.simple.TimSort;
@@ -31,7 +30,6 @@ import java.util.stream.Stream;
 
 import static edu.neu.coe.huskySort.sort.huskySort.AbstractHuskySort.UNICODE_CODER;
 import static edu.neu.coe.huskySort.sort.huskySortUtils.HuskyCoderFactory.englishCoder;
-import static edu.neu.coe.huskySort.sort.huskySortUtils.HuskyCoderFactory.chineseCoder;
 import static edu.neu.coe.huskySort.sort.huskySortUtils.HuskySortHelper.generateRandomLocalDateTimeArray;
 import static edu.neu.coe.huskySort.util.Utilities.*;
 
@@ -43,7 +41,6 @@ public final class HuskySortBenchmark {
 
     /**
      * Run the main four benchmarks: string sorts, tuple sorts, date sorts and number sorts.
-     *
      */
     public void runBenchmarks() {
         // CONSIDER refactoring the following to conform to the others
@@ -77,11 +74,7 @@ public final class HuskySortBenchmark {
         // NOTE: common words benchmark
         if (isConfigBenchmarkStringSorter("english"))
             benchmarkStringSorters(COMMON_WORDS_CORPUS, HuskySortBenchmarkHelper.getWords(COMMON_WORDS_CORPUS, HuskySortBenchmark::lineAsList), n, m, englishCoder);
-
-        // NOTE: shuffledChinese words benchmarks
-        if (isConfigBenchmarkStringSorter("shuffledChinese"))
-            doChineseBenchmark("shuffledChinese_example.txt", n, m, chineseCoder);
-        }
+    }
 
     /**
      * Run benchmarks on sorting LocalDateTime.
@@ -613,22 +606,8 @@ public final class HuskySortBenchmark {
             benchmarkStringSorters(resource, words, nWords, nRuns, huskyCoder);
     }
 
-    private void doChineseBenchmark(final String resource, final int nWords, final int nRuns, final HuskyCoder<String> huskyCoder) {
-        final String[] words = getChineseWordsFromResource(resource);
-        // NOTE that the words retrieved from the resource have variable number of Chinese characters in each string.
-        // I have noted strings with lengths from 2 up to 34 characters, with possibly more.
-        if (isConfigBoolean(Config.HELPER, BaseHelper.INSTRUMENT))
-            benchmarkStringSortersInstrumented(words, nWords, nRuns, huskyCoder);
-        else
-            benchmarkStringSorters(resource, words, nWords, nRuns, huskyCoder);
-    }
-
     private static String[] getLeipzigWordsFromResource(final String resource) {
         return HuskySortBenchmarkHelper.getWords(resource, HuskySortBenchmark::getLeipzigWords);
-    }
-
-    private static String[] getChineseWordsFromResource(final String resource) {
-        return HuskySortBenchmarkHelper.getWords(resource, x -> Arrays.asList(new String[]{x}));
     }
 
     private static <Y extends Number & Comparable<Y>> void doNumericQuicksort(final String subject, final Supplier<Y[]> supplier, final int m, final Class<? extends Number> clazz, final boolean isInt) {
