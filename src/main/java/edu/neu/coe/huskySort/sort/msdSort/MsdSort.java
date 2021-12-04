@@ -21,7 +21,7 @@ public class MsdSort<I extends CharSequence, O extends CharSequence & Comparable
     public static void main(final String[] args) {
 
         final int N = 50000;
-        final int m = 10;
+        final int m = 1;
         logger.info("MsdSort.main: sorting " + N + " random alphabetic ASCII words " + m + " times");
         // Just for test purpose: this should take about 3 minutes
         final MsdSort<String, String> sorter = new MsdSort<>(TranslatorFactory.CHINESE_TRANSLATOR, false, false);
@@ -44,8 +44,6 @@ public class MsdSort<I extends CharSequence, O extends CharSequence & Comparable
         if (mayBeSorted) Collections.shuffle(Arrays.asList(xs));
         // NOTE: First pass where we code to pinyin and sort according to those.
         final O[] pinyins = msdTranslator.batchDecode(xs);
-        Pair<O, I>[] pairs = new Pair[xs.length];
-//        msdS
 //        introSort(xs, longs, 0, longs.length, 2 * floor_lg(xs.length));
         final O[] oaux = (O[]) Array.newInstance(pinyins[0].getClass(), xs.length);
         final I[] iaux = (I[]) Array.newInstance(xs[0].getClass(), xs.length);
@@ -60,7 +58,7 @@ public class MsdSort<I extends CharSequence, O extends CharSequence & Comparable
      *                         NOTE: that even though we are using IntroSort, the random shuffle precaution is necessary when
      * @param useInsertionSort if true, then insertion sort will be used to mop up remaining inversions instead of system sort.
      */
-    public MsdSort(final MsdTranslator<I, O> msdTranslator, final boolean mayBeSorted, final boolean useInsertionSort) {
+    public MsdSort(final UnicodeTranslator<I, O> msdTranslator, final boolean mayBeSorted, final boolean useInsertionSort) {
         this.msdTranslator = msdTranslator;
         this.mayBeSorted = mayBeSorted;
         this.useInsertionSort = useInsertionSort;
@@ -199,16 +197,6 @@ public class MsdSort<I extends CharSequence, O extends CharSequence & Comparable
      * @param i     the index of one element to be swapped.
      * @param j     the index of the other element to be swapped.
      */
-//    private void swap(final X[] xs, final long[] longs, final int i, final int j) {
-//        // Swap longs
-//        final long temp1 = longs[i];
-//        longs[i] = longs[j];
-//        longs[j] = temp1;
-//        // Swap xs
-//        final X temp2 = xs[i];
-//        xs[i] = xs[j];
-//        xs[j] = temp2;
-//    }
     private void swap(final I[] is, final O[] os, final int i, final int j) {
         // Swap Os
         final O tempO = os[i];
@@ -253,7 +241,7 @@ public class MsdSort<I extends CharSequence, O extends CharSequence & Comparable
         }
     }
 
-    private MsdTranslator<I, O> getMsdTranslator() {
+    private UnicodeTranslator<I, O> getMsdTranslator() {
         return msdTranslator;
     }
 
@@ -264,7 +252,7 @@ public class MsdSort<I extends CharSequence, O extends CharSequence & Comparable
     // It would be like looking up aardvark in the dictionary using strict binary search.
     private static final boolean OPTIMIZED = false;
 
-    private final MsdTranslator<I, O> msdTranslator;
+    private final UnicodeTranslator<I, O> msdTranslator;
     private final boolean mayBeSorted;
     private final boolean useInsertionSort;
     private final int Radix = 27;

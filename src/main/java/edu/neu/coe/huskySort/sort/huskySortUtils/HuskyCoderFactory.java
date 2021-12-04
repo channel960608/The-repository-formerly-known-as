@@ -3,6 +3,9 @@
  */
 package edu.neu.coe.huskySort.sort.huskySortUtils;
 
+import edu.neu.coe.huskySort.sort.msdSort.TranslatorFactory;
+import edu.neu.coe.huskySort.sort.msdSort.UnicodeTranslator;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.LongBuffer;
@@ -133,6 +136,24 @@ public final class HuskyCoderFactory {
          */
         public long huskyEncode(final String str) {
             return utf8ToLong(str);
+        }
+    };
+
+    /**
+     * A Husky Coder for Chinese.
+     */
+    public final static HuskySequenceCoder<String> chineseCoder = new BaseHuskySequenceCoder<String>("Chinese", MAX_LENGTH_ENGLISH) {
+        final UnicodeTranslator<String, String> chineseTranslator = TranslatorFactory.CHINESE_TRANSLATOR;
+        /**
+         * Encode x as a long.
+         * As much as possible, if x > y, huskyEncode(x) > huskyEncode(y).
+         * If this cannot be guaranteed, then the result of imperfect(z) will be true.
+         *
+         * @param str the X value to encode.
+         * @return a long which is, as closely as possible, monotonically increasing with the domain of X values.
+         */
+        public long huskyEncode(final String str) {
+            return englishToLong(chineseTranslator.msdDecode(str));
         }
     };
 

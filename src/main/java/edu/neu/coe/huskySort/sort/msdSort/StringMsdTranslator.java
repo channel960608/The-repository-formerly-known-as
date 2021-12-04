@@ -4,7 +4,7 @@ package edu.neu.coe.huskySort.sort.msdSort;
  * @author Caspar
  * @date 2021/12/2 04:39
  */
-public interface StringMsdTranslator extends MsdTranslator{
+public interface StringMsdTranslator extends UnicodeTranslator{
 
     /**
      * @return the name of this coder.

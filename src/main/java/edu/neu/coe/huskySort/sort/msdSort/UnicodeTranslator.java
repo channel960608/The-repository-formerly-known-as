@@ -12,7 +12,7 @@ package edu.neu.coe.huskySort.sort.msdSort;/**
  * Keep in mind that the process is not reversible, since it is a many-to-1 mapping.
  *
  */
-public interface MsdTranslator<I extends CharSequence, O extends CharSequence> {
+public interface UnicodeTranslator<I extends CharSequence, O extends CharSequence> {
 
     /**
      * @return the name of this coder.

@@ -15,7 +15,7 @@ import java.util.Arrays;
  * @author Caspar
  * @date 2021/11/27 16:18
  */
-public class ChineseTranslator implements MsdTranslator<String, String>{
+public class ChineseTranslator implements UnicodeTranslator<String, String>{
 
     private final static LazyLogger logger = new LazyLogger(ChineseTranslator.class);
 
