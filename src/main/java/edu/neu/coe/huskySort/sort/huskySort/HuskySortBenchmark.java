@@ -10,7 +10,6 @@ import edu.neu.coe.huskySort.sort.huskySortUtils.HuskyCoder;
 import edu.neu.coe.huskySort.sort.huskySortUtils.HuskyCoderFactory;
 import edu.neu.coe.huskySort.sort.huskySortUtils.HuskySortHelper;
 import edu.neu.coe.huskySort.sort.huskySortUtils.HuskySortable;
-import edu.neu.coe.huskySort.sort.msdSort.ChineseTranslator;
 import edu.neu.coe.huskySort.sort.radix.Alphabet;
 import edu.neu.coe.huskySort.sort.radix.MSDStringSort;
 import edu.neu.coe.huskySort.sort.simple.TimSort;
@@ -81,9 +80,10 @@ public final class HuskySortBenchmark {
         // NOTE: shuffledChinese words benchmarks
         if (isConfigBenchmarkStringSorter("shuffledChinese"))
             doChineseBenchmark("shuffledChinese_example.txt", n, m, chineseCoder);
+
         // NOTE: Chinese Name corpus benchmarks (according to command-line arguments)
         if (isConfigBenchmarkStringSorter("chinesenames"))
-            benchmarkStringSorters(CHINESE_NAMES_CORPUS, HuskySortBenchmarkHelper.getWords(CHINESE_NAMES_CORPUS, HuskySortBenchmark::lineAsList), n, m, chineseEncoder);
+            benchmarkStringSorters(CHINESE_NAMES_CORPUS_EXAMPLE, HuskySortBenchmarkHelper.getWords(CHINESE_NAMES_CORPUS_EXAMPLE, HuskySortBenchmark::lineAsList), n, m, chineseEncoder);
     }
 
     /**
@@ -723,6 +723,7 @@ public final class HuskySortBenchmark {
 
     static final String COMMON_WORDS_CORPUS = "3000-common-words.txt";
     static final String CHINESE_NAMES_CORPUS = "Chinese_Names_Corpus.txt";
+    static final String CHINESE_NAMES_CORPUS_EXAMPLE = "shuffledChinese_example.txt";
 
     static final int MIN_REPS = 20;
 

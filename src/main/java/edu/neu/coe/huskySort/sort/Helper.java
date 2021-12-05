@@ -77,13 +77,10 @@ public interface Helper<X extends Comparable<X>> {
      * @return true if there was an inversion (i.e. the order was wrong and had to be be fixed).
      */
     default boolean swapConditional(final X[] xs, final int i, final int j) {
-        final X v = xs[i];
-        final X w = xs[j];
-        final boolean result = v.compareTo(w) > 0;
+        final boolean result = compare(xs, i, j) > 0;
         if (result) {
             // CONSIDER invoking swap
-            xs[i] = w;
-            xs[j] = v;
+            swap(xs, i, j);
         }
         return result;
     }
@@ -98,10 +95,9 @@ public interface Helper<X extends Comparable<X>> {
     default boolean swapStableConditional(final X[] xs, final int i) {
         final X v = xs[i];
         final X w = xs[i - 1];
-        final boolean result = v.compareTo(w) < 0;
+        boolean result = less(v, w);
         if (result) {
-            xs[i] = w;
-            xs[i - 1] = v;
+            swap(xs, i, i - 1);
         }
         return result;
     }
@@ -130,7 +126,7 @@ public interface Helper<X extends Comparable<X>> {
      * @param i  the index of the element to be swapped into the ordered array xs[0..i-1].
      */
     default void swapIntoSorted(final X[] xs, final int i) {
-        int j = binarySearch(xs, 0, i, xs[i]);
+        int j = binarySearch(xs, xs[i], this::compare);
         if (j < 0) j = -j - 1;
         if (j < i) swapInto(xs, j, i);
     }

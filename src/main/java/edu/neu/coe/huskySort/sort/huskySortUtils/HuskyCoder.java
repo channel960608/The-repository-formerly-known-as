@@ -45,7 +45,9 @@ public interface HuskyCoder<X> {
      */
     default long huskyEncode(final byte[] bs) {
         long result = 0L;
-        for (int i = 0; i < bs.length && i < 7; i++) result = (result << 8) | bs[i];
+        for (int i = 0; i < bs.length && i < 7; i++)  {
+            result = (result << 8) | (bs[i] & 0xff);
+        }
         return result;
     }
 
