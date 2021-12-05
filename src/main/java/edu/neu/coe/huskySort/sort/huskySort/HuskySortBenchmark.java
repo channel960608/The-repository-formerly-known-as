@@ -31,7 +31,6 @@ import java.util.stream.Stream;
 import static edu.neu.coe.huskySort.sort.huskySort.AbstractHuskySort.UNICODE_CODER;
 import static edu.neu.coe.huskySort.sort.huskySortUtils.HuskyCoderFactory.chineseEncoder;
 import static edu.neu.coe.huskySort.sort.huskySortUtils.HuskyCoderFactory.englishCoder;
-import static edu.neu.coe.huskySort.sort.huskySortUtils.HuskyCoderFactory.chineseCoder;
 import static edu.neu.coe.huskySort.sort.huskySortUtils.HuskySortHelper.generateRandomLocalDateTimeArray;
 import static edu.neu.coe.huskySort.util.Utilities.*;
 
@@ -76,10 +75,6 @@ public final class HuskySortBenchmark {
         // NOTE: common words benchmark
         if (isConfigBenchmarkStringSorter("english"))
             benchmarkStringSorters(COMMON_WORDS_CORPUS, HuskySortBenchmarkHelper.getWords(COMMON_WORDS_CORPUS, HuskySortBenchmark::lineAsList), n, m, englishCoder);
-
-        // NOTE: shuffledChinese words benchmarks
-        if (isConfigBenchmarkStringSorter("shuffledChinese"))
-            doChineseBenchmark("shuffledChinese_example.txt", n, m, chineseCoder);
 
         // NOTE: Chinese Name corpus benchmarks (according to command-line arguments)
         if (isConfigBenchmarkStringSorter("chinesenames"))

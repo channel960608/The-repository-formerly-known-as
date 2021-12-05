@@ -73,7 +73,6 @@ public final class HuskySortHelper {
         addToSequenceCoderMap(chineseEncoder);
         addToSequenceCoderMap(englishCoder);
         addToSequenceCoderMap(unicodeCoder);
-        addToSequenceCoderMap(chineseCoder);
     }
 
     private static void addToSequenceCoderMap(final HuskySequenceCoder<String> asciiCoder) {
