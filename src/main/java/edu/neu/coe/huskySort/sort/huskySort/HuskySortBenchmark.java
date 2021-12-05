@@ -268,17 +268,6 @@ public final class HuskySortBenchmark {
             }
         }
 
-        if (isConfigBenchmarkStringSorter("chinesedualpivotquicksort")) {
-            Sort<String> s = new QuickSort_DualPivot<>(new UnicodeHelper("chinese string sorter", Collator.getInstance(Locale.CHINESE)));
-            final Benchmark<String[]> benchmark = new Benchmark<>(getDescription(nWords, "Dual Pivot Quick Sort for Chinese String", s2), x -> x
-                    , s::sort, x -> checkSorted(x, Collator.getInstance(Locale.CHINESE)));
-            try {
-                doPureBenchmark(words, nWords, nRuns, random, benchmark, preSorted);
-            } catch (final SortException e) {
-                throw new RuntimeException("sort exception", e);
-            }
-        }
-
         if (isConfigBenchmarkStringSorter("chinesehuskysort")) {
             PureHuskySort<String> s = new PureHuskySort(HuskyCoderFactory.chineseEncoder, false, false);
             final Benchmark<String[]> benchmark = new Benchmark<>(getDescription(nWords, "Husky Sort for Chinese String", s2), null
@@ -292,7 +281,7 @@ public final class HuskySortBenchmark {
 
         if (isConfigBenchmarkStringSorter("chineselsdradixsort")) {
             UnicodeLSDSort sorter = new UnicodeLSDSort(Collator.getInstance(Locale.CHINA));
-            final Benchmark<String[]> benchmark = new Benchmark<>(getDescription(nWords, "MSDSort for Chinese String", s2), (x) -> {
+            final Benchmark<String[]> benchmark = new Benchmark<>(getDescription(nWords, "LSDSort for Chinese String", s2), (x) -> {
                 sorter.reset();
                 return x;
             }, sorter::sort, x -> checkSorted(x, Collator.getInstance(Locale.CHINESE)));
@@ -305,7 +294,7 @@ public final class HuskySortBenchmark {
 
         if (isConfigBenchmarkStringSorter("chineselsdsort_keycutoff_5")) {
             UnicodeLSDSort sorter = new UnicodeLSDSort(Collator.getInstance(Locale.CHINA), 5);
-            final Benchmark<String[]> benchmark = new Benchmark<>(getDescription(nWords, "MSDSort for Chinese String with key cutoff = 5", s2), (x) -> {
+            final Benchmark<String[]> benchmark = new Benchmark<>(getDescription(nWords, "LSDSort for Chinese String with key cutoff = 5", s2), (x) -> {
                 sorter.reset();
                 return x;
             }, sorter::sort, x -> checkSorted(x, Collator.getInstance(Locale.CHINESE)));
@@ -318,10 +307,21 @@ public final class HuskySortBenchmark {
 
         if (isConfigBenchmarkStringSorter("chinesemsdsort_keycutoff_5")) {
             UnicodeMSDSort sorter = new UnicodeMSDSort(Collator.getInstance(Locale.CHINA), 5);
-            final Benchmark<String[]> benchmark = new Benchmark<>(getDescription(nWords, "MSDSort for Chinese String with key length = 5", s2), (x) -> {
+            final Benchmark<String[]> benchmark = new Benchmark<>(getDescription(nWords, "MSDSort for Chinese String with key cutoff = 5", s2), (x) -> {
                 sorter.reset();
                 return x;
             }, sorter::sort, x -> checkSorted(x, Collator.getInstance(Locale.CHINESE)));
+            try {
+                doPureBenchmark(words, nWords, nRuns, random, benchmark, preSorted);
+            } catch (final SortException e) {
+                throw new RuntimeException("sort exception", e);
+            }
+        }
+
+        if (isConfigBenchmarkStringSorter("chinesedualpivotquicksort")) {
+            Sort<String> s = new QuickSort_DualPivot<>(new UnicodeHelper("chinese string sorter", Collator.getInstance(Locale.CHINESE)));
+            final Benchmark<String[]> benchmark = new Benchmark<>(getDescription(nWords, "Dual Pivot Quick Sort for Chinese String", s2), x -> x
+                    , s::sort, x -> checkSorted(x, Collator.getInstance(Locale.CHINESE)));
             try {
                 doPureBenchmark(words, nWords, nRuns, random, benchmark, preSorted);
             } catch (final SortException e) {
