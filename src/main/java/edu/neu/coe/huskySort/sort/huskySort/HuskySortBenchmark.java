@@ -52,7 +52,7 @@ public final class HuskySortBenchmark {
      */
     public void runBenchmarks() {
         // CONSIDER refactoring the following to conform to the others
-        sortStrings(config.getIntegerStream("benchmarkstringsorters", "sizes"), 50000);
+        sortStrings(config.getIntegerStream("benchmarkstringsorters", "sizes"), 500000000);
         config.getIntegerStream("benchmarktuplesorters", "sizes").forEach(x -> sortTuples(x, 250000000));
         config.getIntegerStream("benchmarkdatesorters", "sizes").forEach(x -> sortLocalDateTimes(x, 50000000));
         config.getIntegerStream("benchmarknumbersorters", "sizes").forEach(x -> sortNumerics(x, 250000000));
