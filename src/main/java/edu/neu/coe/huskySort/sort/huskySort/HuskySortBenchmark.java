@@ -4,14 +4,19 @@
 package edu.neu.coe.huskySort.sort.huskySort;
 
 import edu.neu.coe.huskySort.sort.BaseHelper;
+import edu.neu.coe.huskySort.sort.Sort;
 import edu.neu.coe.huskySort.sort.SortException;
 import edu.neu.coe.huskySort.sort.SortWithHelper;
+import edu.neu.coe.huskySort.sort.compareSort.UnicodeHelper;
+import edu.neu.coe.huskySort.sort.compareSort.UnicodeTimSort;
 import edu.neu.coe.huskySort.sort.huskySortUtils.HuskyCoder;
 import edu.neu.coe.huskySort.sort.huskySortUtils.HuskyCoderFactory;
 import edu.neu.coe.huskySort.sort.huskySortUtils.HuskySortHelper;
 import edu.neu.coe.huskySort.sort.huskySortUtils.HuskySortable;
+import edu.neu.coe.huskySort.sort.huskySortUtils.OutputUtils;
 import edu.neu.coe.huskySort.sort.radix.Alphabet;
 import edu.neu.coe.huskySort.sort.radix.MSDStringSort;
+import edu.neu.coe.huskySort.sort.radix.UnicodeMSDSort;
 import edu.neu.coe.huskySort.sort.simple.TimSort;
 import edu.neu.coe.huskySort.sort.simple.*;
 import edu.neu.coe.huskySort.util.*;
@@ -21,6 +26,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.Collator;
 import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDateTime;
 import java.util.*;
@@ -78,7 +84,7 @@ public final class HuskySortBenchmark {
 
         // NOTE: Chinese Name corpus benchmarks (according to command-line arguments)
         if (isConfigBenchmarkStringSorter("chinesenames"))
-            benchmarkStringSorters(CHINESE_NAMES_CORPUS_EXAMPLE, HuskySortBenchmarkHelper.getWords(CHINESE_NAMES_CORPUS_EXAMPLE, HuskySortBenchmark::lineAsList), n, m, chineseEncoder);
+            benchmarkStringSorters(CHINESE_NAMES_CORPUS, HuskySortBenchmarkHelper.getWords(CHINESE_NAMES_CORPUS, HuskySortBenchmark::lineAsList), n, m, chineseEncoder);
     }
 
     /**
@@ -233,6 +239,67 @@ public final class HuskySortBenchmark {
                 throw new RuntimeException("sort exception", e);
             }
         }
+
+        if (isConfigBenchmarkStringSorter("chinesemsdsort")) {
+            UnicodeMSDSort sorter = new UnicodeMSDSort(Collator.getInstance(Locale.CHINA));
+            final Benchmark<String[]> benchmark = new Benchmark<>(getDescription(nWords, "MSDSort for Chinese String", s2), (x) -> {
+                sorter.reset();
+                return x;
+            }, sorter::sort, x -> checkSorted(x, Collator.getInstance(Locale.CHINESE)));
+            try {
+                doPureBenchmark(words, nWords, nRuns, random, benchmark, preSorted);
+            } catch (final SortException e) {
+                throw new RuntimeException("sort exception", e);
+            }
+        }
+
+        if (isConfigBenchmarkStringSorter("chinesetimsort")) {
+            Sort<String> s = new UnicodeTimSort(new UnicodeHelper("chinese string sorter", Collator.getInstance(Locale.CHINESE)));
+            final Benchmark<String[]> benchmark = new Benchmark<>(
+                    getDescription(nWords, "Timsort for Chinese String", s2),
+                    (x) -> x,
+                    s::sort,
+                    x -> checkSorted(x, Collator.getInstance(Locale.CHINESE)));
+            try {
+                doPureBenchmark(words, nWords, nRuns, random, benchmark, preSorted);
+            } catch (final SortException e) {
+                throw new RuntimeException("sort exception", e);
+            }
+        }
+
+        if (isConfigBenchmarkStringSorter("chinesedualpivotquicksort")) {
+            Sort<String> s = new QuickSort_DualPivot<>(new UnicodeHelper("chinese string sorter", Collator.getInstance(Locale.CHINESE)));
+            final Benchmark<String[]> benchmark = new Benchmark<>(getDescription(nWords, "Dual Pivot Quick Sort for Chinese String", s2), x -> x
+                    , s::sort, x -> checkSorted(x, Collator.getInstance(Locale.CHINESE)));
+            try {
+                doPureBenchmark(words, nWords, nRuns, random, benchmark, preSorted);
+            } catch (final SortException e) {
+                throw new RuntimeException("sort exception", e);
+            }
+        }
+
+        if (isConfigBenchmarkStringSorter("chinesehuskysort")) {
+            PureHuskySort<String> s = new PureHuskySort(HuskyCoderFactory.chineseEncoder, false, false);
+            final Benchmark<String[]> benchmark = new Benchmark<>(getDescription(nWords, "Husky Sort for Chinese String", s2), null
+                    , s::sort, x -> checkSorted(x, Collator.getInstance(Locale.CHINESE)));
+            try {
+                doPureBenchmark(words, nWords, nRuns, random, benchmark, preSorted);
+            } catch (final SortException e) {
+                throw new RuntimeException("sort exception", e);
+            }
+        }
+
+        if (isConfigBenchmarkStringSorter("chineselsdradixsort")) {
+            Sort<String> s = new UnicodeTimSort(new UnicodeHelper("chinese string sorter", Collator.getInstance(Locale.CHINESE)));
+            final Benchmark<String[]> benchmark = new Benchmark<>(getDescription(nWords, "LSD radix Sort for Chinese String", s2), null
+                    , s::sort, x -> checkSorted(x, Collator.getInstance(Locale.CHINESE)));
+            try {
+                doPureBenchmark(words, nWords, nRuns, random, benchmark, preSorted);
+            } catch (final SortException e) {
+                throw new RuntimeException("sort exception", e);
+            }
+        }
+
     }
 
     /**
@@ -250,6 +317,17 @@ public final class HuskySortBenchmark {
                 final char[] charsXsi = xs[i].toCharArray();
                 System.out.println(xs[i - 1]);
                 System.out.println(xs[i]);
+                throw new SortException("not in order at index " + i);
+            }
+    }
+
+    private static void checkSorted(final String[] xs, Collator collator) {
+        if (xs.length < 2) return;
+        for (int i = 1; i < xs.length; i++)
+            if (collator.compare(xs[i], xs[i - 1]) < 0) {
+                logger.warn(Arrays.toString(xs));
+                logger.warn(xs[i - 1]);
+                logger.warn(xs[i]);
                 throw new SortException("not in order at index " + i);
             }
     }
@@ -590,7 +668,19 @@ public final class HuskySortBenchmark {
     private static void doPureBenchmark(final String[] words, final int nWords, final int nRuns, final Random random, final Benchmark<String[]> benchmark, final boolean preSorted) {
         final double time = benchmark.run(getWordSupplier(words, nWords, random, preSorted), nRuns);
         logger.info("CSV, " + benchmark + ", " + nWords + ", " + time); // XXX What does CSV mean in this context?
+        OutputUtils.write("result.csv", appendResult(benchmark.toString(), nWords, time));
         for (final TimeLogger timeLogger : timeLoggersLinearithmic) timeLogger.log(time, nWords);
+    }
+
+    private static String appendResult(String benchmark, int nWorks, double time) {
+        StringBuilder sb = new StringBuilder("");
+        sb.append(nWorks);
+        sb.append(", ");
+        sb.append(time);
+        sb.append(", ");
+        sb.append(benchmark);
+        sb.append("\n");
+        return sb.toString();
     }
 
     private static Supplier<String[]> getWordSupplier(final String[] words, final int nWords, final Random random, final boolean preSorted) {
@@ -718,7 +808,6 @@ public final class HuskySortBenchmark {
 
     static final String COMMON_WORDS_CORPUS = "3000-common-words.txt";
     static final String CHINESE_NAMES_CORPUS = "Chinese_Names_Corpus.txt";
-    static final String CHINESE_NAMES_CORPUS_EXAMPLE = "shuffledChinese_example.txt";
 
     static final int MIN_REPS = 20;
 

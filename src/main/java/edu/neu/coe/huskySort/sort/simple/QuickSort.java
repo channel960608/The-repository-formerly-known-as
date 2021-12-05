@@ -43,6 +43,12 @@ public abstract class QuickSort<X extends Comparable<X>> extends SortWithHelper<
         sort(xs, from, to, 0);
     }
 
+    @Override
+    public X[] sort(final X[] xs) {
+        sort(xs, 0, xs.length);
+        return xs;
+    }
+
     /**
      * Sort the sub-array xs[from] .. xs[to-1]
      *

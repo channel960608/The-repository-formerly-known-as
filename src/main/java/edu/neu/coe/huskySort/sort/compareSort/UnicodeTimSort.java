@@ -15,6 +15,13 @@ public class UnicodeTimSort extends TimSort<String> {
         Arrays.sort(xs, from, to, (e1, e2) -> getHelper().compare(e1, e2));
     }
 
+    @Override
+    public String[] sort(final String[] xs) {
+        sort(xs, 0, xs.length);
+        return xs;
+    }
+
+
     public static final String DESCRIPTION = "UnicodeTimsort";
 
     /**

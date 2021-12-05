@@ -13,6 +13,12 @@ public class UnicodeMSDSort {
         this.collator = collator;
     }
 
+    public void reset() {
+        aux = null;
+        keysAux = null;
+        keys = null;
+    }
+
     /**
      * Sort an array of Strings using MSDStringSort.
      *
@@ -50,7 +56,7 @@ public class UnicodeMSDSort {
         else {
             final int[] count = new int[R + 2];
             for (int i = lo; i < hi; i++) {
-                final int x = keys[i][d];
+                final int x = charAt(i, d);
                 count[x + 2]++;
             }
             for (int r = 0; r < R + 1; r++)      // Transform counts to indices.
