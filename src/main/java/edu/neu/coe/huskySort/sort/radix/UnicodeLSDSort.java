@@ -3,7 +3,6 @@ package edu.neu.coe.huskySort.sort.radix;
 import java.lang.reflect.Array;
 import java.text.Collator;
 import java.util.Arrays;
-import java.util.OptionalInt;
 
 /**
  * @author Caspar
@@ -11,33 +10,62 @@ import java.util.OptionalInt;
  */
 public class UnicodeLSDSort {
 
+    public UnicodeLSDSort(final Collator collator, final int keyLengthCutoff) {
+        this.collator = collator;
+        setKeyLength(keyLengthCutoff);
+        customKeyLength = true;
+    }
+
     public UnicodeLSDSort(final Collator collator) {
         this.collator = collator;
     }
 
+    public void reset() {
+        aux = null;
+        keysAux = null;
+        keys = null;
+        keyLength = 20;
+        customKeyLength = false;
+        secondSort = false;
+    }
     /**
      * Sort an array of Strings using MSDStringSort.
      *
      * @param a the array to be sorted.
      */
     public void sort(final String[] a) {
+        preSort(a);
+        sort(a,  keyLength - 1);
+        postSort(a);
+    }
+
+    private void preSort(final String[] a) {
         final int n = a.length;
         aux = new String[n];
         byte[][] mKeys = Arrays.stream(a).map(e -> collator.getCollationKey(e).toByteArray()).toArray(byte[][]::new);
-        Integer[] length = Arrays.stream(mKeys).map(Array::getLength).sorted().toArray(Integer[]::new);
-        int maxKeyLength =  getMaxLength(length);
-        int mKeyLength = Math.min(keyLength, maxKeyLength);
-        keysAux = new byte[n][mKeyLength];
-        keys = new byte[n][mKeyLength];
-        //
-        sort(a,  mKeyLength - 1);
-        if (mKeyLength < maxKeyLength) {
+        getKeyLength(mKeys);
+        keysAux = new byte[n][keyLength];
+        keys = new byte[n][keyLength];
+        for (int i = 0; i < mKeys.length; ++i) {
+            keys[i] = new byte[keyLength];
+            for (int j = 0; j < keyLength && j < mKeys[i].length; ++j) {
+                keys[i][j] = mKeys[i][j];
+            }
+        }
+    }
+
+    private void postSort(final String[] a) {
+        if (secondSort) {
             Arrays.sort(a, collator::compare);
         }
     }
 
-    private int getMaxLength(Integer[] length) {
-        return Arrays.stream(length).max(Integer::compareTo).orElse(0);
+    private void getKeyLength(byte[][] keys) {
+        Integer[] lengths = Arrays.stream(keys).map(Array::getLength).sorted().toArray(Integer[]::new);
+        if (!customKeyLength) {
+            keyLength = lengths[lengths.length / 2];
+        }
+        secondSort = keyLength < lengths[lengths.length - 1];
     }
 
     public Collator getCollator() {
@@ -59,7 +87,7 @@ public class UnicodeLSDSort {
         }
         for (int i = 0; i < a.length; ++i) {
             aux[count[charAt(i, d)]] = a[i];
-            keys[count[charAt(i, d)]++] = keysAux[i];
+            keysAux[count[charAt(i, d)]++] = keys[i];
         }
         for (int i = 0; i < a.length; ++i) {
             a[i] = aux[i];
@@ -87,4 +115,6 @@ public class UnicodeLSDSort {
     private static byte[][] keysAux;
     private final Collator collator;
     private static int keyLength = 20;
+    private static boolean customKeyLength = false;
+    private static boolean secondSort = false;
 }

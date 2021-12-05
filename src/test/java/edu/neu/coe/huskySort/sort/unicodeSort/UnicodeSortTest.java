@@ -26,10 +26,25 @@ public class UnicodeSortTest {
     // MSD Sort for Chinese
     @Test
     public void testMSDSort() {
-        final String[] input = {"陈富", "陈富贵","陈大炮","晨移入","陈健康","王大炮","陈达跑", "陈富", "陈富贵","陈大炮","晨移入","陈健康","王大炮","陈达跑"};
-        final String[] expected = {"晨移入", "晨移入", "陈达跑", "陈达跑","陈大炮","陈大炮","陈富","陈富","陈富贵","陈富贵","陈健康","陈健康","王大炮", "王大炮"};
+        final String[] input = {"陈富", "陈富贵","陈大炮","晨移入","陈健康","王大炮","陈达跑", "陈富", "陈富贵","陈大炮"
+                ,"晨移入","陈健康","王大炮","陈达跑", "陈富", "陈富贵","陈大炮","晨移入","陈健康","王大炮","陈达跑", "陈富", "陈富贵","陈大炮","晨移入","陈健康","王大炮","陈达跑"};
+        final String[] expected = {"晨移入", "晨移入", "晨移入", "晨移入", "陈达跑", "陈达跑","陈达跑", "陈达跑","陈大炮"
+                ,"陈大炮","陈大炮","陈大炮","陈富","陈富","陈富","陈富","陈富贵","陈富贵","陈富贵","陈富贵","陈健康","陈健康","陈健康","陈健康", "王大炮", "王大炮", "王大炮", "王大炮"};
 
         UnicodeMSDSort unicodeMSDSort = new UnicodeMSDSort(Collator.getInstance(Locale.CHINA));
+        unicodeMSDSort.sort(input);
+        assertArrayEquals(expected, input);
+    }
+
+    // MSD Sort with custom keyLength for Chinese
+    @Test
+    public void testMSDSortWithKeyLengthCutoff() {
+        final String[] input = {"陈富", "陈富贵","陈大炮","晨移入","陈健康","王大炮","陈达跑", "陈富", "陈富贵","陈大炮"
+                ,"晨移入","陈健康","王大炮","陈达跑", "陈富", "陈富贵","陈大炮","晨移入","陈健康","王大炮","陈达跑", "陈富", "陈富贵","陈大炮","晨移入","陈健康","王大炮","陈达跑"};
+        final String[] expected = {"晨移入", "晨移入", "晨移入", "晨移入", "陈达跑", "陈达跑","陈达跑", "陈达跑","陈大炮"
+                ,"陈大炮","陈大炮","陈大炮","陈富","陈富","陈富","陈富","陈富贵","陈富贵","陈富贵","陈富贵","陈健康","陈健康","陈健康","陈健康", "王大炮", "王大炮", "王大炮", "王大炮"};
+
+        UnicodeMSDSort unicodeMSDSort = new UnicodeMSDSort(Collator.getInstance(Locale.CHINA), 5);
         unicodeMSDSort.sort(input);
         assertArrayEquals(expected, input);
     }
@@ -37,10 +52,25 @@ public class UnicodeSortTest {
     // LSD radix sort
     @Test
     public void testLSDRadixSort() {
-        final String[] input = {"陈富", "陈富贵","陈大炮","晨移入","陈健康","王大炮","陈达跑", "陈富", "陈富贵","陈大炮","晨移入","陈健康","王大炮","陈达跑"};
-        final String[] expected = {"晨移入", "晨移入", "陈达跑", "陈达跑","陈大炮","陈大炮","陈富","陈富","陈富贵","陈富贵","陈健康","陈健康","王大炮", "王大炮"};
+        final String[] input = {"陈富", "陈富贵","陈大炮","晨移入","陈健康","王大炮","陈达跑", "陈富", "陈富贵","陈大炮"
+                ,"晨移入","陈健康","王大炮","陈达跑", "陈富", "陈富贵","陈大炮","晨移入","陈健康","王大炮","陈达跑", "陈富", "陈富贵","陈大炮","晨移入","陈健康","王大炮","陈达跑"};
+        final String[] expected = {"晨移入", "晨移入", "晨移入", "晨移入", "陈达跑", "陈达跑","陈达跑", "陈达跑","陈大炮"
+                ,"陈大炮","陈大炮","陈大炮","陈富","陈富","陈富","陈富","陈富贵","陈富贵","陈富贵","陈富贵","陈健康","陈健康","陈健康","陈健康", "王大炮", "王大炮", "王大炮", "王大炮"};
 
         UnicodeLSDSort unicodeLSDSort = new UnicodeLSDSort(Collator.getInstance(Locale.CHINA));
+        unicodeLSDSort.sort(input);
+        assertArrayEquals(expected, input);
+    }
+
+    // LSD Sort with custom keyLength for Chinese
+    @Test
+    public void testLSDSortWithKeyLengthCutoff() {
+        final String[] input = {"陈富", "陈富贵","陈大炮","晨移入","陈健康","王大炮","陈达跑", "陈富", "陈富贵","陈大炮"
+                ,"晨移入","陈健康","王大炮","陈达跑", "陈富", "陈富贵","陈大炮","晨移入","陈健康","王大炮","陈达跑", "陈富", "陈富贵","陈大炮","晨移入","陈健康","王大炮","陈达跑"};
+        final String[] expected = {"晨移入", "晨移入", "晨移入", "晨移入", "陈达跑", "陈达跑","陈达跑", "陈达跑","陈大炮"
+                ,"陈大炮","陈大炮","陈大炮","陈富","陈富","陈富","陈富","陈富贵","陈富贵","陈富贵","陈富贵","陈健康","陈健康","陈健康","陈健康", "王大炮", "王大炮", "王大炮", "王大炮"};
+
+        UnicodeLSDSort unicodeLSDSort = new UnicodeLSDSort(Collator.getInstance(Locale.CHINA), 5);
         unicodeLSDSort.sort(input);
         assertArrayEquals(expected, input);
     }
@@ -48,8 +78,10 @@ public class UnicodeSortTest {
     // Quick Sort dual pivot sorting for Chinese
     @Test
     public void testQuicksortDualPivot() {
-        final String[] input = {"陈富", "陈富贵","陈大炮","晨移入","陈健康","王大炮","陈达跑", "陈富", "陈富贵","陈大炮","晨移入","陈健康","王大炮","陈达跑"};
-        final String[] expected = {"晨移入", "晨移入", "陈达跑", "陈达跑","陈大炮","陈大炮","陈富","陈富","陈富贵","陈富贵","陈健康","陈健康","王大炮", "王大炮"};
+        final String[] input = {"陈富", "陈富贵","陈大炮","晨移入","陈健康","王大炮","陈达跑", "陈富", "陈富贵","陈大炮"
+                ,"晨移入","陈健康","王大炮","陈达跑", "陈富", "陈富贵","陈大炮","晨移入","陈健康","王大炮","陈达跑", "陈富", "陈富贵","陈大炮","晨移入","陈健康","王大炮","陈达跑"};
+        final String[] expected = {"晨移入", "晨移入", "晨移入", "晨移入", "陈达跑", "陈达跑","陈达跑", "陈达跑","陈大炮"
+                ,"陈大炮","陈大炮","陈大炮","陈富","陈富","陈富","陈富","陈富贵","陈富贵","陈富贵","陈富贵","陈健康","陈健康","陈健康","陈健康", "王大炮", "王大炮", "王大炮", "王大炮"};
 
         Sort<String> s = new QuickSort_DualPivot<>(new UnicodeHelper("chinese string sorter", Collator.getInstance(Locale.CHINESE)));
         final String[] result = s.sort(input);
@@ -72,8 +104,10 @@ public class UnicodeSortTest {
     // Tim Sort for Chinese
     @Test
     public void testTimSort() {
-        final String[] input = {"陈富", "陈富贵","陈大炮","晨移入","陈健康","王大炮","陈达跑", "陈富", "陈富贵","陈大炮","晨移入","陈健康","王大炮","陈达跑"};
-        final String[] expected = {"晨移入", "晨移入", "陈达跑", "陈达跑","陈大炮","陈大炮","陈富","陈富","陈富贵","陈富贵","陈健康","陈健康","王大炮", "王大炮"};
+        final String[] input = {"陈富", "陈富贵","陈大炮","晨移入","陈健康","王大炮","陈达跑", "陈富", "陈富贵","陈大炮"
+                ,"晨移入","陈健康","王大炮","陈达跑", "陈富", "陈富贵","陈大炮","晨移入","陈健康","王大炮","陈达跑", "陈富", "陈富贵","陈大炮","晨移入","陈健康","王大炮","陈达跑"};
+        final String[] expected = {"晨移入", "晨移入", "晨移入", "晨移入", "陈达跑", "陈达跑","陈达跑", "陈达跑","陈大炮"
+                ,"陈大炮","陈大炮","陈大炮","陈富","陈富","陈富","陈富","陈富贵","陈富贵","陈富贵","陈富贵","陈健康","陈健康","陈健康","陈健康", "王大炮", "王大炮", "王大炮", "王大炮"};
 
         Sort<String> s = new UnicodeTimSort(new UnicodeHelper("chinese string sorter", Collator.getInstance(Locale.CHINESE)));
         s.sort(input, 0, input.length);

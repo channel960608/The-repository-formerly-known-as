@@ -1,7 +1,9 @@
 package edu.neu.coe.huskySort.sort.radix;
 
+import java.lang.reflect.Array;
 import java.text.Collator;
 import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * @author Caspar
@@ -13,10 +15,20 @@ public class UnicodeMSDSort {
         this.collator = collator;
     }
 
+    public UnicodeMSDSort(final Collator collator, final int keyLengthCutoff) {
+        this.collator = collator;
+        customKeyLength = true;
+        keyLength = keyLengthCutoff;
+    }
+
     public void reset() {
         aux = null;
         keysAux = null;
         keys = null;
+        keyLength = 20;
+        customKeyLength = false;
+        secondSort = false;
+
     }
 
     /**
@@ -26,10 +38,39 @@ public class UnicodeMSDSort {
      */
     public void sort(final String[] a) {
         final int n = a.length;
-        aux = new String[n];
-        keysAux = new byte[n][];
-        this.keys = Arrays.stream(a).map(e -> collator.getCollationKey(e).toByteArray()).toArray(byte[][]::new);
+        preSort(a);
         sort(a,  0, n, 0);
+        postSort(a);
+    }
+
+    private void preSort(final String[] a) {
+        final int n = a.length;
+        aux = new String[n];
+        byte[][] mKeys = Arrays.stream(a).map(e -> collator.getCollationKey(e).toByteArray()).toArray(byte[][]::new);
+        getKeyLength(mKeys);
+        keysAux = new byte[n][keyLength];
+        keys = new byte[n][];
+        for (int i = 0; i < mKeys.length; ++i) {
+            if (mKeys[i].length < keyLength) {
+                keys[i] = mKeys[i];
+            } else {
+                keys[i] = Arrays.copyOfRange(mKeys[i], 0, keyLength);
+            }
+        }
+    }
+
+    private void postSort(final String[] a) {
+        if (secondSort) {
+            Arrays.sort(a, collator::compare);
+        }
+    }
+
+    private void getKeyLength(byte[][] keys) {
+        Integer[] lengths = Arrays.stream(keys).map(Array::getLength).sorted().toArray(Integer[]::new);
+        if (!customKeyLength) {
+            keyLength = lengths[lengths.length / 2];
+        }
+        secondSort = keyLength < lengths[lengths.length - 1];
     }
 
     public Collator getCollator() {
@@ -121,5 +162,9 @@ public class UnicodeMSDSort {
     private static byte[][] keys;
     private static byte[][] keysAux;
     private final Collator collator;
+
+    private static int keyLength = 20;
+    private static boolean customKeyLength = false;
+    private static boolean secondSort = false;
 
 }
