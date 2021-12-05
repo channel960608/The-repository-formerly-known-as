@@ -45,6 +45,7 @@ public abstract class QuickSort<X extends Comparable<X>> extends SortWithHelper<
 
     @Override
     public X[] sort(final X[] xs) {
+        preSort(xs, false);
         sort(xs, 0, xs.length);
         return xs;
     }

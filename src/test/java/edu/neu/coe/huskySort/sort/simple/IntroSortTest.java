@@ -35,8 +35,7 @@ public class IntroSortTest {
         assertEquals(Integer.valueOf(4), ys[3]);
     }
 
-//    @Test
-    //TODO(caspar) fix the test case
+    @Test
     public void testSortDetailed1() throws Exception {
         int k = 7;
         int N = (int) Math.pow(2, k);

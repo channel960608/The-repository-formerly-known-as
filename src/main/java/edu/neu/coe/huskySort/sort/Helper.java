@@ -79,7 +79,6 @@ public interface Helper<X extends Comparable<X>> {
     default boolean swapConditional(final X[] xs, final int i, final int j) {
         final boolean result = compare(xs, i, j) > 0;
         if (result) {
-            // CONSIDER invoking swap
             swap(xs, i, j);
         }
         return result;

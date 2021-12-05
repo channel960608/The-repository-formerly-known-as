@@ -17,6 +17,7 @@ public class UnicodeTimSort extends TimSort<String> {
 
     @Override
     public String[] sort(final String[] xs) {
+        preSort(xs, false);
         sort(xs, 0, xs.length);
         return xs;
     }
