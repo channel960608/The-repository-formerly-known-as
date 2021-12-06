@@ -319,8 +319,8 @@ public final class HuskySortBenchmark {
         }
 
         if (isConfigBenchmarkStringSorter("chinesedualpivotquicksort")) {
-            Sort<String> s = new QuickSort_DualPivot<>(new UnicodeHelper("chinese string sorter", Collator.getInstance(Locale.CHINESE)));
-            final Benchmark<String[]> benchmark = new Benchmark<>(getDescription(nWords, "Dual Pivot Quick Sort for Chinese String", s2), x -> x
+            Sort<String> s = new IntroSort<>(new UnicodeHelper("chinese string sorter", Collator.getInstance(Locale.CHINESE)));
+            final Benchmark<String[]> benchmark = new Benchmark<>(getDescription(nWords, "Introsort based on Dual Pivot Quick Sort for Chinese String", s2), null
                     , s::sort, x -> checkSorted(x, Collator.getInstance(Locale.CHINESE)));
             try {
                 doPureBenchmark(words, nWords, nRuns, random, benchmark, preSorted);
