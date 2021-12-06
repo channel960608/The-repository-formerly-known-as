@@ -147,7 +147,7 @@ public class UnicodeMSDSort {
     }
 
     private int charAt(int i, int d) {
-        if (d > keys[i].length) {
+        if (d >= keys[i].length) {
             return 0;
         } else if (keys[i][d] < 0) {
             return 256 + keys[i][d];
@@ -156,7 +156,7 @@ public class UnicodeMSDSort {
         }
     }
 
-    private static int cutoff = 15;
+    private static int cutoff = 30;
     private static String[] aux;       // auxiliary array for distribution
     private static int R = 256;
     private static byte[][] keys;

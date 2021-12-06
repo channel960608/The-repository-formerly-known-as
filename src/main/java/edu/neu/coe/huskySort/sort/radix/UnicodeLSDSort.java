@@ -100,7 +100,7 @@ public class UnicodeLSDSort {
     }
 
     private int charAt(int i, int d) {
-        if (d > keys[i].length) {
+        if (d >= keys[i].length) {
             return 0;
         } else if (keys[i][d] < 0) {
             return 256 + keys[i][d];
