@@ -156,7 +156,7 @@ public class UnicodeMSDSort {
         }
     }
 
-    private static int cutoff = 30;
+    private static int cutoff = 31;
     private static String[] aux;       // auxiliary array for distribution
     private static int R = 256;
     private static byte[][] keys;
